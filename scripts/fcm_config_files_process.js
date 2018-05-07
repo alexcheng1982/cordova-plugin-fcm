@@ -3,6 +3,9 @@
 
 var fs = require('fs');
 var path = require('path');
+var execSync = require('child_process').execSync;
+var cordovaVersion = execSync('cordova -v', {encoding: 'utf-8'});
+var isNewFolderStructures = cordovaVersion.split('.')[0] >= 7;
 
 fs.ensureDirSync = function (dir) {
     if (!fs.existsSync(dir)) {
@@ -36,14 +39,14 @@ var PLATFORM = {
     },
     ANDROID: {
         dest: [
-            ANDROID_DIR + '/google-services.json'
+            (isNewFolderStructures ? "platforms/android/app/" : ANDROID_DIR) + '/google-services.json'
         ],
         src: [
             'google-services.json',
             ANDROID_DIR + '/assets/www/google-services.json',
             'www/google-services.json'
         ],
-        stringsXml: ANDROID_DIR + '/res/values/strings.xml'
+        stringsXml: (isNewFolderStructures ? "platforms/android/app/src/main" : ANDROID_DIR)  + '/res/values/strings.xml'
     }
 };
 
